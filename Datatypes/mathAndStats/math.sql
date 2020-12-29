@@ -112,3 +112,26 @@ median(p0010001) AS "County Median",
 percentile_cont(.5)
 WITHIN GROUP (ORDER BY p0010001) AS "50th Percentile"
 FROM us_counties_2010;
+-- Finding the mode with the mode() function
+
+SELECT mode() WITHIN GROUP(ORDER BY p0010001)
+FROM us_counties_2010;
+--Excercises :
+-- Using the 2010 Census county data, find out which New York
+--state county has the highest percentage of the population that
+--identified as “American Indian/Alaska Native Alone.”
+-- where p0010004 integer,       -- American Indian and Alaska Native Alone
+
+SELECT geo_name, state_us_abbreviation,
+round(((p0010005::numeric(8,1))/p0010001)*100, 5) AS "% of American Indian/Alaska Native Alone"
+
+FROM us_counties_2010
+ORDER BY "% of American Indian/Alaska Native Alone" DESC
+LIMIT 1;
+-- Was the 2010 median county population higher in California or New York?
+
+SELECT state_us_abbreviation,
+median(p0010001) as "Median Population"
+FROM us_counties_2010
+WHERE state_us_abbreviation ILIKE 'ny' OR state_us_abbreviation ILIKE 'ca'
+GROUP BY state_us_abbreviation ;
