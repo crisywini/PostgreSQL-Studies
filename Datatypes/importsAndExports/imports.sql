@@ -13,7 +13,7 @@ FROM '/home/directory/file.csv'
 WITH (FORMAT CSV, HEADER); -- The delimited is comma and the HEADER is going to be ignore
 
 
-
+Guardar
 
 
 CREATE TABLE us_counties_2010 (
@@ -120,3 +120,35 @@ CREATE TABLE us_counties_2010 (
     h0010002 integer,   -- Occupied
     h0010003 integer    -- Vacant
 );
+
+
+
+CREATE TABLE supervisor_salaries (
+town varchar(30),
+county varchar(30),
+supervisor varchar(30),
+start_date date,
+salary money,
+benefits money
+);
+
+
+\copy supervisor_salaries
+FROM '/home/crisisanchezp/prueba_psql/supervisor_salaries.csv'
+WITH (FORMAT CSV, HEADER);
+
+\copy supervisor_salaries (town, supervisor, salary)
+FROM '/home/crisisanchezp/prueba_psql/supervisor_salaries.csv'
+WITH (FORMAT CSV, HEADER);
+
+CREATE TEMPORARY TABLE supervisor_salaries_temp (LIKE supervisor_salaries);
+
+\copy supervisor_salaries_temp (town, supervisor, salary)
+FROM '/home/crisisanchezp/prueba_psql/supervisor_salaries.csv'
+WITH (FORMAT CSV, HEADER);
+
+INSERT INTO supervisor_salaries (town, county, supervisor, salary)
+SELECT town, 'Some County', supervisor, salary
+FROM supervisor_salaries_temp;
+
+DROP TABLE supervisor_salaries_temp;
